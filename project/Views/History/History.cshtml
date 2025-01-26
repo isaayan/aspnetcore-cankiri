@@ -1,0 +1,85 @@
+@model HistoryViewModel
+
+@{
+var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+var role = User.FindFirstValue(ClaimTypes.Role);
+bool isAdmin = !string.IsNullOrEmpty(role) && role == "admin";
+}
+
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-8">
+            <div class="bg-white p-4 shadow-sm rounded">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="h4 fw-bold" style="text-align: center; color: gray;">History and Introduction</h1>
+                    </div>
+                    <div class="col-lg-4 text-end">
+                        @if (isAdmin)
+                        {
+                        <a href="/history/create" class="btn btn-primary">New Post</a>
+                        }
+                    </div>
+                </div>
+
+                @foreach (var history in Model.History)
+                {
+                <hr style="color: gray;">
+                <div class="card bg-transparent border-0 mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h5><a asp-controller="History" asp-action="Details" asp-route-id="@history.HistoryId"
+                                    class="btn-link fw-bold">@history.Title</a></h5>
+                            <p class="text-muted">@history.Description</p>
+                        </div>
+                        @if (isAdmin)
+                        {
+                        <div class="col-4 text-end">
+                            <a href="/history/edit/@history.HistoryId" class="btn btn-sm btn-primary">Edit</a>
+                            <a data-id="@history.HistoryId" class="btn btn-danger btn-sm delete-btn">Delete</a>
+                        </div>
+                        }
+                    </div>
+                </div>
+                }
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item"><a href="#" class="page-link">1</a></li>
+                        <li class="page-item"><a href="#" class="page-link">2</a></li>
+                        <li class="page-item"><a href="#" class="page-link">3</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('delete-btn')) {
+            var historyId = event.target.dataset.id;
+
+            if (confirm('Are you sure you want to delete this History and Introduction?')) {
+                $.ajax({
+                    url: `/history/Delete/${historyId}`,
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An unexpected error occurred.');
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+
+}

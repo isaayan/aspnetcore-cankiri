@@ -1,0 +1,46 @@
+@model IEnumerable<User>
+
+    <div class="container mt-4">
+        <div class="bg-white p-4 shadow-sm rounded">
+            <h2 class="fw-bold text-center text-muted mb-4">Kullanıcılar Listesi</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı Adı</th>
+                        <th>Adı Soyadı</th>
+                        <th>Email</th>
+                        <th>Rolü</th>
+                        <th>Aksiyon</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>@user.Role</td>
+                        <td>
+                            @if (user.Role != "admin")
+                            {
+                            <form asp-action="PromoteToAdmin" method="post" style="display:inline;">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <button type="submit" class="btn btn-success btn-sm">Adminliğe Yükselt</button>
+                            </form>
+                            }
+                            else
+                            {
+                            <form asp-action="DemoteToUser" method="post" style="display:inline;">
+                                <input type="hidden" name="userId" value="@user.UserId" />
+                                <button type="submit" class="btn btn-warning btn-sm">Kullanıcılığa düşür</button>
+                            </form>
+                            }
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    

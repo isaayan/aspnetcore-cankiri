@@ -1,0 +1,28 @@
+﻿@model List<News>
+
+    <div class="card mb-3 shadow-lg rounded" style="border: 1px solid #ddd;">
+        <div class="card-header bg-primary text-white">
+            <div class="row"> 
+                <div class="col-8"> 
+                    <h5 class="card-title mb-0">Yeni Haberler</h5>
+                </div>
+                @if (User.Identity!.IsAuthenticated)
+                {
+                    <div class="col-4"> 
+                        <h5 class="card-title mb-0 text-right"><a href="/news" class="text-white text-decoration-none fs-6">Tüm Haberler</a></h5>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-body">
+            @foreach (var news in Model)
+            {
+                <div class="mb-3">
+                    <a href="/news/details/@news.NewsId" class="text-decoration-none">
+                        <h6 class="mb-0 text-dark">- @news.Title</h6>
+                    </a>
+                </div>
+            }
+        </div> 
+    </div>
+    

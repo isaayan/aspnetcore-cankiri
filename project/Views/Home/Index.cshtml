@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SliderImage>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container-fluid p-0">
+    <div class="row">
+        <div class="col-lg-8 mt-5">
+            <h1 style="color: #003366;">Çankırı: Tarih ve Doğanın İç İçe Geçtiği Bir İl</h1>
+
+            <p style="color: #333333;">Türkiye'nin Orta Anadolu Bölgesi'nde yer alan Çankırı, hem tarihi zenginliği hem de doğal güzellikleriyle dikkat çeken bir şehirdir. Kızılırmak'ın kolları olan Acıçay ve Tatlıçay'ın birleştiği noktada kurulan Çankırı, önemli bir ticaret yolu üzerinde yer alması nedeniyle geçmişte birçok medeniyete ev sahipliği yapmıştır.</p>
+
+            <h2 style="color: #003366;">Tarihi ve Kültürel Zenginlikler</h2>
+            <p style="color: #333333;">Çankırı, Frigler, Romalılar, Bizanslılar ve Osmanlılar gibi birçok medeniyete ev sahipliği yapmış tarihi bir şehirdir. Şehirdeki tarihi kalıntılar, müzeler ve camiler bu zengin tarihi mirasın izlerini taşımaktadır. Özellikle Çankırı Kalesi, Taş Mescit ve Çankırı Müzesi ziyaretçilerin dikkatini çeken önemli noktalardır.</p>
+
+            <h2 style="color: #003366;">Doğal Güzellikler</h2>
+            <p style="color: #333333;">Çankırı doğal güzellikleriyle de öne çıkıyor. Yıldıztepe Kayak Merkezi kış sporları meraklıları için ideal bir destinasyon. Kadınçayırı Tabiat Parkı yemyeşil doğası, şelaleleri ve yürüyüş parkurlarıyla ziyaretçilerine huzurlu bir ortam sunuyor. İl genelinde bulunan birçok doğal güzellik yürüyüş, kamp ve piknik gibi aktiviteler için idealdir.</p>
+
+            <h2 style="color: #003366;">Ekonomi</h2>
+            <p style="color: #333333;">Çankırı ekonomisi üç ana sektöre dayanmaktadır: tarım, hayvancılık ve sanayi. Özellikle kaya tuzu üretimi ilde önemli bir yere sahiptir. Ayrıca ilde mermer, kömür ve krom gibi maden yatakları bulunmaktadır.</p>
+
+            <h2 style="color: #003366;">Eğitim</h2>
+            <p style="color: #333333;">Çankırı Karatekin Üniversitesi, ilin eğitim hayatına önemli katkılarda bulunmaktadır. Üniversite, farklı alanlarda lisans ve lisansüstü programlar sunmaktadır.</p>
+
+            <p style="color: #003366;"><strong>Çözüm:</strong> Tarihi ve doğal güzellikleriyle Çankırı, hem yerli hem de yabancı turistlerin ilgisini çeken bir şehirdir. Sakin atmosferi, güler yüzlü insanları ve zengin kültürel mirasıyla Çankırı, unutulmaz bir tatil deneyimi sunuyor.</p>
+
+        </div>
+        <div class="col-lg-4 mt-5">
+            <div id="myCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach (var image in Model)
+                    {
+                        <div class="carousel-item @(Model.First() == image ? "active" : "")">
+                            <img src="@image.ImagePath" class="d-block w-100" alt="@image.Caption">
+                            <div class="carousel-caption">
+                                <h5>@image.Caption</h5>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Önceki</span>
+                </a>
+                <a class="carousel-control-next" href="#myCarousel" role="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Sonraki</span>
+                </a>
+            </div>
+            <vc:new-news></vc:new-news>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48464.333689913736!2d33.61458805!3d40.6073635!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4083c36f2a9f52bf%3A0xf5f91d66cd94dd3a!2zw4dhbmvEsXLEsSwgw4dhbmvEsXLEsSBNZXJrZXovw4dhbmvEsXLEsQ!5e0!3m2!1str!2str!4v1735519845475!5m2!1str!2str" width="400" height="250" style="border:0; border-radius: 5px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+</div>

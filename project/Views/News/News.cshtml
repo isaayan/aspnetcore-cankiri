@@ -1,0 +1,108 @@
+﻿@model NewsViewModel
+
+@{
+var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+var role = User.FindFirstValue(ClaimTypes.Role);
+bool isAdmin = !string.IsNullOrEmpty(role) && role == "admin";
+}
+
+<div class="row d-flex justify-content-center">
+    <div class="col-lg-8">
+        <div class="bg-white p-4 rounded shadow-sm">
+            <div class="row d-flex justify-content-between align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="h4  fw-bold" style="color: rgb(130, 128, 128);text-align: center;">Haberler</h1>
+                </div>
+                <div class="col-lg-4 text-end">
+                    @if (isAdmin)
+                    {
+                    <a href="/news/create" class="btn btn-primary">Yeni Haber Ekle</a>
+                    }
+                </div>
+            </div>
+            @foreach (var news in Model.News)
+            {
+            <hr style="color: gray;">
+            <div class="card bg-transparent border-0 mb-3">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <h5><a asp-controller="News" asp-action="Details" asp-route-id="@news.NewsId"
+                                class="btn-link fw-bold">@news.Title</a></h5>
+                        <p class="text-muted">@news.Description</p>
+                    </div>
+                    @if (isAdmin)
+                    {
+                    <div class="col-4 text-end">
+                        <a href="/news/edit/@news.NewsId" class="btn btn-sm btn-primary">Düzenle</a>
+                        <button data-id="@news.NewsId" class="btn btn-danger btn-sm delete-btn">Sil</button>
+                    </div>
+                    }
+                </div>
+            </div>
+            <hr class="my-3">
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-transparent {
+        background-color: transparent;
+    }
+
+    .btn-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .btn-link:hover {
+        text-decoration: underline;
+    }
+
+    .pagination {
+        margin: 20px 0;
+    }
+
+    .pagination .page-item {
+        margin: 0 5px;
+    }
+
+    .pagination .page-link {
+        color: #007bff;
+    }
+
+    .pagination .page-link:hover {
+        text-decoration: none;
+        background-color: #e9ecef;
+    }
+</style>
+
+@section Scripts {
+<script>
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('delete-btn')) {
+            var newsId = event.target.dataset.id;
+
+            if (confirm('Are you sure you want to delete this news?')) {
+                $.ajax({
+                    url: `/news/Delete/${newsId}`,
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An unexpected error occurred.');
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+
+}

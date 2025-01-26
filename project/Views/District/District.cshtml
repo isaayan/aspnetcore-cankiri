@@ -1,0 +1,155 @@
+@model IEnumerable<District>
+
+    @{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var role = User.FindFirstValue(ClaimTypes.Role);
+    bool isAdmin = !string.IsNullOrEmpty(role) && role == "admin";
+    }
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th colspan="4" class="h4 mb-4 text-center fw-bold">Çankırı Belediyesi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (isAdmin)
+                            {
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td contenteditable="true" data-field="Name">@item.Name</td>
+
+                                <td>
+                                    <button class="btn btn-primary btn-sm update-btn"
+                                        data-id="@item.Id">Güncelle</button>
+                                    <button class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">Sil</button>
+                                </td>
+
+                            </tr>
+                            }
+                            <tr>
+                                <td contenteditable="true" data-field="Name"></td>
+                                <td>
+                                    <button class="btn btn-success btn-sm add-btn">Ekle</button>
+                                </td>
+                            </tr>
+
+                            }
+                            else
+                            {
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td>@item.Name</td>
+                            </tr>
+                            }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('click', function (event) {
+            // Update Butonu
+            if (event.target.classList.contains('update-btn')) {
+                const id = event.target.getAttribute('data-id');
+                const row = event.target.closest('tr');
+                const data = {};
+                row.querySelectorAll('[data-field]').forEach(cell => {
+                    data[cell.getAttribute('data-field')] = cell.innerText.trim(); // İçeriklerin temizlenmesi
+                });
+
+                $.ajax({
+                    url: `/District/Update/${id}`,
+                    type: 'POST',
+                    data: data,
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload(); // Sayfa yenilenir
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function (data) {
+                        console.error('AJAX Error:', data);
+                        alert('An unexpected error occurred.');
+                    }
+                });
+
+            }
+            // Delete Butonu
+            if (event.target.classList.contains('delete-btn')) {
+                const id = event.target.getAttribute('data-id');
+                if (confirm('Are you sure you want to delete this item?')) {
+                    $.ajax({
+                        url: `/District/Delete/${id}`,
+                        type: 'POST',
+                        success: function (data) {
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload(); // Sayfa yenilenir
+                            } else {
+                                alert(data.message);
+                            }
+                        },
+                        error: function (data) {
+                            console.error('AJAX Error:', data);
+                            alert('An unexpected error occurred.');
+                        }
+                    });
+                }
+            }
+
+            // Add Butonu
+            // Add Butonu
+            if (event.target.classList.contains('add-btn')) {
+                const row = event.target.closest('tr');
+                const data = {};
+                let isValid = true;
+
+                row.querySelectorAll('[data-field]').forEach(cell => {
+                    const value = cell.innerText.trim();
+                    if (!value) {
+                        isValid = false; // Boş alan var
+                        cell.style.border = '2px solid red'; // Görsel uyarı
+                    } else {
+                        cell.style.border = ''; // Varsayılan stili geri yükle
+                    }
+                    data[cell.getAttribute('data-field')] = value;
+                });
+
+                if (!isValid) {
+                    alert('Lütfen tüm alanları doldurun.');
+                    return; // Boş alan varsa işlemi durdur
+                }
+
+                $.ajax({
+                    url: `/District/Add`,
+                    type: 'POST',
+                    data: data,
+                    success: function (data) {
+                        if (data.success && data != "") {
+                            alert(data.message);
+                            window.location.reload(); // Sayfa yenilenir
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An unexpected error occurred.');
+                    }
+                });
+            }
+
+        });
+
+    </script>

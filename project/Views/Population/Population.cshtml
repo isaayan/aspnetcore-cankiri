@@ -1,0 +1,204 @@
+@using System.Security.Claims
+@model IEnumerable<Population>
+
+    @{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var role = User.FindFirstValue(ClaimTypes.Role);
+    bool isAdmin = !string.IsNullOrEmpty(role) && role == "admin";
+    }
+
+    <div class="container mt-4">
+        <h2>Nüfus Bilgileri</h2>
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Yıl</th>
+                    <th>Toplam Nüfus</th>
+                    <th>Erkek Nüfus</th>
+                    <th>Kadın Nüfus</th>
+                    @if (isAdmin)
+                    {
+                    <th>Düzenle</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (isAdmin)
+                {
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td contenteditable="true" data-id="@item.Id" data-field="Year">@item.Year</td>
+                    <td contenteditable="true" data-id="@item.Id" data-field="GeneralPopulation">@item.GeneralPopulation
+                    </td>
+                    <td contenteditable="true" data-id="@item.Id" data-field="MalePopulation">@item.MalePopulation</td>
+                    <td contenteditable="true" data-id="@item.Id" data-field="FemalePopulation">@item.FemalePopulation
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-sm update-btn" data-id="@item.Id">Güncelle</button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">Sil</button>
+                    </td>
+                </tr>
+                }
+                <tr>
+                    <td contenteditable="true" data-field="Year"></td>
+                    <td contenteditable="true" data-field="GeneralPopulation"></td>
+                    <td contenteditable="true" data-field="MalePopulation"></td>
+                    <td contenteditable="true" data-field="FemalePopulation"></td>
+                    <td>
+                        <button class="btn btn-success btn-sm add-btn">Ekle</button>
+                    </td>
+                </tr>
+                }
+                else{
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td contenteditable="@isAdmin" data-id="@item.Id" data-field="Year">@item.Year</td>
+                    <td contenteditable="@isAdmin" data-id="@item.Id" data-field="GeneralPopulation">
+                        @item.GeneralPopulation</td>
+                    <td contenteditable="@isAdmin" data-id="@item.Id" data-field="MalePopulation">@item.MalePopulation
+                    </td>
+                    <td contenteditable="@isAdmin" data-id="@item.Id" data-field="FemalePopulation">
+                        @item.FemalePopulation</td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .table {
+            border-radius: 8px;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            margin: 2px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('click', function (event) {
+            // Update Butonu
+            if (event.target.classList.contains('update-btn')) {
+                const id = event.target.getAttribute('data-id');
+                const row = event.target.closest('tr');
+                const data = {};
+                row.querySelectorAll('[data-field]').forEach(cell => {
+                    data[cell.getAttribute('data-field')] = cell.innerText.trim(); // İçeriklerin temizlenmesi
+                });
+
+                $.ajax({
+                    url: `/Population/Update/${id}`,
+                    type: 'POST',
+                    data: data,
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload(); // Sayfa yenilenir
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function (data) {
+                        console.error('AJAX Error:', data);
+                        alert('An unexpected error occurred.');
+                    }
+                });
+
+            }
+            // Delete Butonu
+            if (event.target.classList.contains('delete-btn')) {
+                const id = event.target.getAttribute('data-id');
+                if (confirm('Are you sure you want to delete this item?')) {
+                    $.ajax({
+                        url: `/population/Delete/${id}`,
+                        type: 'POST',
+                        success: function (data) {
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload(); // Sayfa yenilenir
+                            } else {
+                                alert(data.message);
+                            }
+                        },
+                        error: function () {
+                            alert('An unexpected error occurred.');
+                        }
+                    });
+                }
+            }
+
+            // Add Butonu
+            if (event.target.classList.contains('add-btn')) {
+                const row = event.target.closest('tr');
+                const data = {};
+                row.querySelectorAll('[data-field]').forEach(cell => {
+                    data[cell.getAttribute('data-field')] = cell.innerText;
+                });
+
+                $.ajax({
+                    url: `/Population/Add`,
+                    type: 'POST',
+                    data: data,
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload(); // Sayfa yenilenir
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An unexpected error occurred.');
+                    }
+                });
+            }
+        });
+
+    </script>

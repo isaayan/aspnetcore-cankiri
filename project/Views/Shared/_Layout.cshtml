@@ -1,0 +1,220 @@
+﻿@{
+var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+var role = User.FindFirstValue(ClaimTypes.Role);
+bool isAdmin = !string.IsNullOrEmpty(role) && role == "admin";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - project</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/project/wwwroot/css/style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/project.styles.css" asp-append-version="true" />
+    <style>
+        /* General Style */
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+            /* Beyaz renk */
+        }
+
+        /* Header Styling */
+        header .navbar {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #ffffff;
+            /* Beyaz renk */
+        }
+
+        .navbar .nav-item {
+            color: white;
+            /* Beyaz renk */
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-link:hover {
+            color: #003d80;
+            /* Daha koyu mavi */
+        }
+
+        .navbar-brand img {
+            max-height: 50px;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            background-color: #ffffff;
+            border: 1px solid #6a11cb;
+        }
+
+        .dropdown-item {
+            color: #6a11cb;
+        }
+
+        .dropdown-item:hover {
+            background-color: #2575fc;
+            color: #ffffff;
+        }
+
+        /* Footer Styling */
+        footer {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #ffffff;
+            padding: 15px 0;
+        }
+
+        footer a {
+            color: #2575fc;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+        }
+
+        /* General Container and Buttons */
+        .container {
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            border-color: #2575fc;
+        }
+
+        .btn-primary:hover {
+            background-color: #003d80;
+            border-color: #003d80;
+        }
+    </style>
+    <style>
+        /* Genel Stil */
+        html, body {
+            height: 100%; /* Sayfanın tamamını kapsar */
+            margin: 0;
+        }
+    
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #2c3e50; /* Koyu mavi-gri */
+            background-color: #ecf0f1; /* Hafif açık gri */
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .container {
+            flex: 1; /* İçeriğin tüm boşluğu doldurmasını sağlar */
+        }
+    
+        footer {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            color: #ecf0f1;
+            padding: 15px 0;
+            text-align: center;
+            position: relative;
+        }
+    
+        footer a {
+            color: white;
+        }
+    
+        footer a:hover {
+            color: #ecf0f1;
+        }
+    
+        /* Footer’ın sabitlenmesi için */
+        footer {
+            margin-top: auto; /* Footer’ın sayfa altına sabitlenmesini sağlar */
+        }
+        .logo {
+            width: auto;
+            height: auto;
+        }
+    
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav
+            class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow sm mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img class="logo" style="height: auto;width: auto;" src="/images/logo1.png" alt="Çankırı">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                        @if (isAdmin)
+                        {
+                        <li class="nav-item">
+                            <a asp-controller="SliderImage" style="color:white;" asp-action="SliderImage" class="nav-link">Slider-Resim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Admin" style="color:white;" asp-action="UserList" class="nav-link">Kullanıcılar</a>
+                        </li>
+                        }
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Bölgemizi Keşfedin
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Population"
+                                            asp-action="Population">Nüfus</a></li>
+                                    <li><a class="dropdown-item" asp-controller="History" asp-action="History">Tarih ve Turistik Yerler</a></li>
+                                    <li><a class="dropdown-item" asp-controller="District"
+                                            asp-action="District">İlçeler Listesi</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="News"style="color:white;" asp-action="News" class="nav-link">Haberler</a>
+                        </li>
+                        <li class="nav-item nav-link"style="color:white;">
+                            @User.Identity.Name
+                        </li>
+                        <li class="nav-item">
+                            <a href="/users/logout" style="color:white;" class="nav-link">Çıkış</a>
+                        </li>
+                        }
+                        else
+                        {
+                        <li class="nav-item">
+                            <a asp-controller="Users"style="color:white;" asp-action="Login" class="nav-link">Giriş</a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Users"style="color:white;" asp-action="Register" class="nav-link">Kayıt Ol</a>
+                        </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mb-0">
+        <div class="container" style="color:white;">
+            &copy; 2024 - Çankırı Belediyesi - Gizlilik
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+@model History
+
+<div class="row d-flex justify-content-center" style="color: black;">
+    <div class="col-lg-8">
+        <div class="bg-white p-4 shadow-sm rounded">
+            <h1 class="h4 mb-4 d-flex justify-content-center fw-bold text-muted">@Model.Title</h1>
+
+            <ul class="list-inline mb-3">
+                <li class="list-inline-item"><i class="bi bi-calendar"></i> @Model.PublishedOn.ToString("d")</li>
+                <li class="list-inline-item">
+                    <i class="bi bi-person-circle"></i>@Model.User.Name
+                </li>
+            </ul>
+
+            <hr>
+
+            <div>@Html.Raw(@Model.Content)</div>
+
+        </div>
+    </div>
+</div>
